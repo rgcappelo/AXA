@@ -53,6 +53,10 @@ df_future = pd.DataFrame({
 # Unir datos históricos y proyectados
 df_nps_total = pd.concat([df_nps, df_future], ignore_index=True)
 
+# Convertir las fechas a formato de string para evitar problemas con Plotly
+
+df_nps_total['Fecha'] = df_nps_total['Fecha'].dt.strftime('%Y-%m')
+
 # Streamlit Dashboard
 st.set_page_config(page_title="Dashboard Smart NPS AXA", layout="wide")
 st.title("Dashboard Smart NPS AXA")
