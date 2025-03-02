@@ -53,8 +53,8 @@ df_future = pd.DataFrame({
 # Unir datos históricos y proyectados
 df_nps_total = pd.concat([df_nps, df_future], ignore_index=True)
 
-# Convertir las fechas a formato de string para evitar problemas con Plotly
-df_nps_total['Fecha'] = df_nps_total['Fecha'].dt.strftime('%Y-%m')
+# Convertir las fechas a tipo string para evitar errores en Plotly
+df_nps_total['Fecha'] = df_nps_total['Fecha'].astype(str)
 
 # Streamlit Dashboard
 st.set_page_config(page_title="Dashboard Smart NPS AXA", layout="wide")
@@ -69,7 +69,7 @@ def plot_nps(df, variable, title, color):
 
 # Mostrar gráficos dinámicos
 st.header("Estamos logrando satisfacer las necesidades de sus clientes?")
-st.plotly_chart(plot_nps(df_nps_total, 'dNPS', "Estamos logrando satisfacer las necesidades de los clientes?", "blue"))
+st.plotly_chart(plot_nps(df_nps_total, 'dNPS', "Estamos logrando satisfacer las necesidades de sus clientes?", "blue"))
 
 st.header("Somos capaces de mantener la confianza de los clientes en el largo plazo?")
 st.plotly_chart(plot_nps(df_nps_total, 'tNPS', "Somos capaces de mantener la confianza de los clientes en el largo plazo?", "orange"))
