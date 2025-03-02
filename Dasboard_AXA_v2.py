@@ -1,8 +1,7 @@
-import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
-from statsmodels.tsa.holtwinters import ExponentialSmoothing
+import matplotlib.pyplot as plt
 
 # Cargar el contenido del documento Word en la introducción
 intro_text = """
@@ -53,29 +52,24 @@ df_future = pd.DataFrame({
 # Unir datos históricos y proyectados
 df_nps_total = pd.concat([df_nps, df_future], ignore_index=True)
 
-# Convertir las fechas a tipo datetime para evitar errores en Plotly
+# Convertir las fechas a tipo datetime para visualización
 df_nps_total['Fecha'] = pd.to_datetime(df_nps_total['Fecha'])
-
-# Streamlit Dashboard
-st.set_page_config(page_title="Dashboard Smart NPS AXA", layout="wide")
-st.title("Dashboard Smart NPS AXA")
-st.markdown(intro_text)
 
 # Función para graficar dinámicamente
 def plot_nps(df, variable, title, color):
-    fig = px.line(df, x='Fecha', y=variable, title=title, markers=True, line_shape='linear', color_discrete_sequence=[color])
-    fig.add_vline(x=df[df['Fecha'] < "2025-03-01"].Fecha.max(), line_dash="dash", line_color="red", annotation_text="Inicio de Predicción")
-    return fig
+    plt.figure(figsize=(10, 5))
+    plt.plot(df['Fecha'], df[variable], marker='o', linestyle='-', color=color, label=title)
+    plt.axvline(x=df[df['Fecha'] < "2025-03-01"].Fecha.max(), color='red', linestyle='--', label="Inicio de Predicción")
+    plt.xlabel("Fecha")
+    plt.ylabel("Puntuación")
+    plt.title(title)
+    plt.legend()
+    plt.grid(True)
+    plt.show()
 
 # Mostrar gráficos dinámicos
-st.header("Estamos logrando satisfacer las necesidades de sus clientes?")
-st.plotly_chart(plot_nps(df_nps_total, 'dNPS', "Estamos logrando satisfacer las necesidades de sus clientes?", "blue"))
-
-st.header("Somos capaces de mantener la confianza de los clientes en el largo plazo?")
-st.plotly_chart(plot_nps(df_nps_total, 'tNPS', "Somos capaces de mantener la confianza de los clientes en el largo plazo?", "orange"))
-
-st.header("Tenemos fortaleza y buena percepción de los clientes en redes sociales?")
-st.plotly_chart(plot_nps(df_nps_total, 'sNPS', "Tenemos fortaleza y buena percepción de los clientes en redes sociales?", "green"))
-
-st.header("Logramos satisfacer las necesidades del cliente, manteniendo su confianza en el largo plazo y con fuerte percepción en redes?")
-st.plotly_chart(plot_nps(df_nps_total, 'Smart_NPS', "Logramos satisfacer las necesidades del cliente, manteniendo su confianza en el largo plazo y con fuerte percepción en redes?", "red"))
+print(intro_text)
+plot_nps(df_nps_total, 'dNPS', "Estamos logrando satisfacer las necesidades de sus clientes?", "blue")
+plot_nps(df_nps_total, 'tNPS', "Somos capaces de mantener la confianza de los clientes en el largo plazo?", "orange")
+plot_nps(df_nps_total, 'sNPS', "Tenemos fortaleza y buena percepción de los clientes en redes sociales?", "green")
+plot_nps(df_nps_total, 'Smart_NPS', "Logramos satisfacer las necesidades del cliente, manteniendo su confianza en el largo plazo y con fuerte percepción en redes?", "red")
