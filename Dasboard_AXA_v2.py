@@ -53,8 +53,8 @@ df_future = pd.DataFrame({
 # Unir datos históricos y proyectados
 df_nps_total = pd.concat([df_nps, df_future], ignore_index=True)
 
-# Convertir las fechas a tipo string para evitar errores en Plotly
-df_nps_total['Fecha'] = df_nps_total['Fecha'].astype(str)
+# Convertir las fechas a tipo datetime para evitar errores en Plotly
+df_nps_total['Fecha'] = pd.to_datetime(df_nps_total['Fecha'])
 
 # Streamlit Dashboard
 st.set_page_config(page_title="Dashboard Smart NPS AXA", layout="wide")
@@ -64,7 +64,7 @@ st.markdown(intro_text)
 # Función para graficar dinámicamente
 def plot_nps(df, variable, title, color):
     fig = px.line(df, x='Fecha', y=variable, title=title, markers=True, line_shape='linear', color_discrete_sequence=[color])
-    fig.add_vline(x=df['Fecha'].iloc[-7], line_dash="dash", line_color="red", annotation_text="Inicio de Predicción")
+    fig.add_vline(x=df[df['Fecha'] < "2025-03-01"].Fecha.max(), line_dash="dash", line_color="red", annotation_text="Inicio de Predicción")
     return fig
 
 # Mostrar gráficos dinámicos
